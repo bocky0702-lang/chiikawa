@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>狸貓一番賞模擬器</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; background: #f9f9f9; }
+    h1 { margin-top: 20px; }
+    .prizes { display: flex; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+    .prize { margin: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: white; width: 120px; }
+    .prize img { width: 100px; height: 100px; object-fit: contain; }
+    .buttons { margin-top: 20px; }
+    button { margin: 5px; padding: 10px 20px; border: none; border-radius: 5px; background: #007bff; color: white; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    #results { margin-top: 20px; white-space: pre-line; }
+    #stats { margin-top: 20px; white-space: pre-line; }
+  </style>
+</head>
+<body>
+  <h1>狸貓一番賞模擬器</h1>
+  <div class="prizes">
+    <div class="prize"><p>A賞：狸貓吉伊<br>1%</p></div>
+    <div class="prize"><p>A賞：狸貓小八<br>1%</p></div>
+    <div class="prize"><p>A賞：狸貓兔兔<br>1%</p></div>
+    <div class="prize"><p>B賞：狸貓吉伊S<br>5%</p></div>
+    <div class="prize"><p>B賞：狸貓小八S<br>5%</p></div>
+    <div class="prize"><p>B賞：狸貓兔兔S<br>5%</p></div>
+    <div class="prize"><p>C賞：狸貓吉伊<br>10.25%</p></div>
+    <div class="prize"><p>C賞：狸貓小八<br>10.25%</p></div>
+    <div class="prize"><p>C賞：狸貓兔兔<br>10.25%</p></div>
+    <div class="prize"><p>C賞：狸貓小桃<br>10.25%</p></div>
+    <div class="prize"><p>C賞：狸貓栗子<br>10.25%</p></div>
+    <div class="prize"><p>C賞：狸貓獅薩<br>10.25%</p></div>
+    <div class="prize"><p>C賞：狸貓師傅<br>10.25%</p></div>
+    <div class="prize"><p>C賞：狸貓古本<br>10.25%</p></div>
+  </div>
+  <div class="buttons">
+    <button onclick="draw(1)">抽 1 次</button>
+    <button onclick="draw(3)">抽 3 次</button>
+    <button onclick="draw(5)">抽 5 次</button>
+    <button onclick="draw(10)">抽 10 次</button>
+    <button onclick="resetResults()">清除紀錄</button>
+  </div>
+  <div id="results"></div>
+  <div id="stats"></div>
+
+  <script>
+    const prizes = [
+      { name: "A賞：狸貓吉伊", prob: 0.01 },
+      { name: "A賞：狸貓小八", prob: 0.01 },
+      { name: "A賞：狸貓兔兔", prob: 0.01 },
+      { name: "B賞：狸貓吉伊S", prob: 0.05 },
+      { name: "B賞：狸貓小八S", prob: 0.05 },
+      { name: "B賞：狸貓兔兔S", prob: 0.05 },
+      { name: "C賞：狸貓吉伊", prob: 0.1025 },
+      { name: "C賞：狸貓小八", prob: 0.1025 },
+      { name: "C賞：狸貓兔兔", prob: 0.1025 },
+      { name: "C賞：狸貓小桃", prob: 0.1025 },
+      { name: "C賞：狸貓栗子", prob: 0.1025 },
+      { name: "C賞：狸貓獅薩", prob: 0.1025 },
+      { name: "C賞：狸貓師傅", prob: 0.1025 },
+      { name: "C賞：狸貓古本", prob: 0.1025 },
+    ];
+
+    let history = [];
+
+    function draw(times) {
+      const latestDraw = []; // 暫存這次抽到的結果
+      for (let i = 0; i < times; i++) {
+        const rand = Math.random();
+        let cumulative = 0;
+        for (const prize of prizes) {
+          cumulative += prize.prob;
+          if (rand < cumulative) {
+            history.push(prize.name);
+            latestDraw.push(prize.name);
+            break;
+          }
+        }
+      }
+      updateResults(latestDraw);
+    }
+
+    function updateResults(latestDraw) {
+      // 只顯示最新一次的抽獎結果
+      document.getElementById("results").innerText = "抽獎結果：\n" + latestDraw.join(", ");
+
+      // 統計全部抽過的紀錄
+      const stats = {};
+      for (const prize of history) {
+        stats[prize] = (stats[prize] || 0) + 1;
+      }
+
+      // 顯示總抽數
+      let totalDraws = history.length;
+      let statsText = "總抽數：" + totalDraws + " 次\n\n";
+
+      for (const [prize, count] of Object.entries(stats)) {
+        statsText += prize + ": " + count + " 次\n";
+      }
+      document.getElementById("stats").innerText = statsText;
+    }
+
+    function resetResults() {
+      history = [];
+      document.getElementById("results").innerText = "";
+      document.getElementById("stats").innerText = "";
+    }
+  </script>
+</body>
+</html>
